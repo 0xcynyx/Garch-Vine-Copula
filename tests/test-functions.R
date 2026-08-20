@@ -1,8 +1,5 @@
 #!/usr/bin/env Rscript
-#' Checks for the functions that need no market data.
-#'
-#' Deliberately base R, so the suite runs without rugarch or VineCopula installed and can be
-#' used as a fast sanity check before a full run. Usage: Rscript tests/test-functions.R
+# Base R checks for the data free functions, usage: Rscript tests/test-functions.R
 
 source("R/config.R")
 source("R/data.R")

@@ -1,11 +1,6 @@
-#' Loading and preparing the returns panel.
+# Loading and preparing the returns panel.
 
-#' Read the workbook and index it by date.
-#'
-#' @param path Path to an xlsx file with a date column and one column per market.
-#' @param date_column Name of the date column.
-#' @param markets Columns to keep, in order.
-#' @return A data frame of returns with dates as row names.
+# Read the workbook and index it by date, keeping only the configured markets.
 load_returns <- function(path = DATA_PATH, date_column = DATE_COLUMN, markets = MARKETS) {
   if (!file.exists(path)) {
     stop("Data file not found: ", path, "\nSet GVC_DATA_PATH or place the workbook there.", call. = FALSE)
@@ -21,29 +16,19 @@ load_returns <- function(path = DATA_PATH, date_column = DATE_COLUMN, markets = 
   frame
 }
 
-#' Count missing values per column.
-#'
-#' @param returns Returns data frame.
-#' @return Named integer vector, one entry per column.
+# Count missing values per column.
 count_missing <- function(returns) {
   vapply(returns, function(column) sum(is.na(column)), integer(1))
 }
 
-#' Fill gaps by linear interpolation, which suits daily financial series.
-#'
-#' @param returns Returns data frame.
-#' @return The same frame with interior gaps filled.
+# Fill gaps by linear interpolation, which suits daily financial series.
 impute_missing <- function(returns) {
   as.data.frame(lapply(returns, function(column) {
     if (any(is.na(column))) zoo::na.approx(column, na.rm = FALSE) else column
   }), row.names = rownames(returns))
 }
 
-#' Prepare the panel end to end and report what was imputed.
-#'
-#' @param path Path to the workbook.
-#' @param verbose Whether to print a summary of imputed values.
-#' @return A clean returns data frame.
+# Prepare the panel end to end and report what was imputed.
 prepare_returns <- function(path = DATA_PATH, verbose = TRUE) {
   returns <- load_returns(path)
   gaps <- count_missing(returns)
@@ -58,11 +43,7 @@ prepare_returns <- function(path = DATA_PATH, verbose = TRUE) {
   filled
 }
 
-#' Dates for the plotted backtest window.
-#'
-#' @param returns Returns data frame indexed by date.
-#' @param window Integer positions to keep.
-#' @return A Date vector.
+# Dates for the plotted backtest window.
 backtest_dates <- function(returns, window = PLOT_WINDOW) {
   as.Date(rownames(returns))[window]
 }

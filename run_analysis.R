@@ -1,8 +1,5 @@
 #!/usr/bin/env Rscript
-#' Runs the full GARCH vine copula study end to end.
-#'
-#' Usage: Rscript run_analysis.R [output_dir]
-#' Every parameter lives in R/config.R, so this file only expresses the order of the steps.
+# Runs the whole study in order, tunables live in R/config.R, usage: Rscript run_analysis.R [out]
 
 for (module in c("config", "packages", "data", "descriptives", "garch", "copula", "backtest", "plots")) {
   source(file.path("R", paste0(module, ".R")))

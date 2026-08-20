@@ -1,11 +1,6 @@
-#' Charts for the vine structure and the value at risk backtests.
+# Charts for the vine structure and the value at risk backtests.
 
-#' Plot realised returns against the value at risk forecasts for one market.
-#'
-#' @param rolls Named list of ugarchroll objects keyed by alpha.
-#' @param dates Dates covering the backtest window.
-#' @param market Market name, used as the y axis label.
-#' @param colours Named colour vector.
+# Plot realised returns against the value at risk forecasts for one market.
 plot_var_backtest <- function(rolls, dates, market, colours = VAR_COLOURS) {
   available <- rolls[!vapply(rolls, is.null, logical(1))]
   if (length(available) == 0) {
@@ -29,11 +24,7 @@ plot_var_backtest <- function(rolls, dates, market, colours = VAR_COLOURS) {
   invisible(NULL)
 }
 
-#' Plot every market's backtest, optionally writing one file per market.
-#'
-#' @param results Output of backtest_all.
-#' @param dates Dates covering the backtest window.
-#' @param output_dir Directory for png files, or NULL to draw to the active device.
+# Plot every market's backtest, writing one png each when an output directory is given.
 plot_all_backtests <- function(results, dates, output_dir = NULL) {
   if (!is.null(output_dir)) dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   for (market in names(results)) {
@@ -46,10 +37,7 @@ plot_all_backtests <- function(results, dates, output_dir = NULL) {
   invisible(NULL)
 }
 
-#' Plot a fitted vine's dependence structure.
-#'
-#' @param vine A fitted RVineMatrix object.
-#' @param output_path Optional png path.
+# Plot a fitted vine's dependence structure.
 plot_vine_structure <- function(vine, output_path = NULL) {
   if (!is.null(output_path)) {
     dir.create(dirname(output_path), showWarnings = FALSE, recursive = TRUE)

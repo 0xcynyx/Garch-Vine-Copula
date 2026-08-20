@@ -1,11 +1,6 @@
-#' Rolling value at risk backtests and their test statistics.
+# Rolling value at risk backtests and their coverage statistics.
 
-#' Run one rolling backtest for a single series and tail probability.
-#'
-#' @param series Numeric vector fed to the rolling estimator.
-#' @param alpha Tail probability, for example 0.01.
-#' @param spec A ugarchspec object.
-#' @param settings List of rolling window settings.
+# Run one rolling backtest for a single series and tail probability.
 roll_var <- function(series, alpha, spec = build_spec(), settings = BACKTEST) {
   tryCatch(
     rugarch::ugarchroll(
@@ -25,16 +20,7 @@ roll_var <- function(series, alpha, spec = build_spec(), settings = BACKTEST) {
   )
 }
 
-#' Backtest every market at every tail probability.
-#'
-#' This replaces the repeated per market blocks in the original script, so adding a market or a
-#' confidence level is a change to the configuration rather than another copy of the code.
-#'
-#' @param panel Data frame whose columns are the series to backtest.
-#' @param spec A ugarchspec object.
-#' @param alphas Tail probabilities.
-#' @param markets Columns to process.
-#' @return A nested list indexed by market then by alpha as a character key.
+# Backtest every market at every level, replacing the thirty six copied blocks.
 backtest_all <- function(panel, spec = build_spec(), alphas = VAR_ALPHAS, markets = names(panel)) {
   results <- lapply(markets, function(market) {
     message("Backtesting ", market)
@@ -44,13 +30,7 @@ backtest_all <- function(panel, spec = build_spec(), alphas = VAR_ALPHAS, market
   stats::setNames(results, markets)
 }
 
-#' Extract the coverage test statistics from one rolling object.
-#'
-#' Actual percentage is the violation rate, LRuc is the unconditional coverage statistic, and
-#' LRcc is the conditional coverage statistic.
-#'
-#' @param roll A ugarchroll object or NULL.
-#' @param alpha The tail probability the roll was computed at.
+# Pull violation rate and the LRuc and LRcc coverage statistics out of one roll.
 var_statistics <- function(roll, alpha) {
   if (is.null(roll)) {
     return(data.frame(alpha = alpha, expected = NA_real_, actual = NA_real_, lr_uc = NA_real_, lr_cc = NA_real_))
@@ -71,10 +51,7 @@ var_statistics <- function(roll, alpha) {
   )
 }
 
-#' Flatten nested backtest results into one reporting table.
-#'
-#' @param results Output of backtest_all.
-#' @return A data frame with one row per market and alpha.
+# Flatten nested backtest results into one reporting table.
 backtest_table <- function(results) {
   rows <- lapply(names(results), function(market) {
     per_alpha <- results[[market]]
@@ -87,9 +64,7 @@ backtest_table <- function(results) {
   do.call(rbind, rows)
 }
 
-#' Print the native rugarch reports, matching the original script's console output.
-#'
-#' @param results Output of backtest_all.
+# Print the native rugarch reports, matching the original script's console output.
 print_var_reports <- function(results) {
   for (market in names(results)) {
     cat("\n==== ", market, " ====\n", sep = "")
